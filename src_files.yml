@@ -1,0 +1,34 @@
+rbe:
+  vlog_opts: [
+    +nowarnSVCHK,
+    -suppress 2275,
+    -L hwpe_stream_lib,
+    -L hwpe_ctrl_lib,
+    -L hci_interconnect_lib,
+  ]
+  incdirs: [
+    .,
+    ../hwpe-stream/rtl,
+    ../hwpe-ctrl/rtl,
+  ]
+  files: [
+    rtl/rbe_package.sv,
+    rtl/rbe_accumulators_scm.sv,
+    rtl/rbe_accumulator_normquant.sv,
+    rtl/rbe_normquant.sv,
+    rtl/rbe_normquant_multiplier.sv,
+    rtl/rbe_input_register.sv,
+    rtl/rbe_binconv_sop.sv,
+    rtl/rbe_binconv_scale.sv,
+    rtl/rbe_binconv_block.sv,
+    rtl/rbe_binconv_column.sv,
+    rtl/rbe_binconv_array.sv,
+    rtl/rbe_engine_core.sv,
+    rtl/rbe_engine.sv,
+    rtl/rbe_ctrl_fsm.sv,
+    rtl/rbe_ctrl.sv,
+    rtl/rbe_streamer.sv,
+    rtl/rbe_top.sv,
+    rtl/rbe_top_wrap.sv,
+    # rtl/rbe_fake_engine_wrap.sv,
+  ]

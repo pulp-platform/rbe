@@ -1,0 +1,11 @@
+*.hex
+gmon.out
+.idea
+
+golden
+verify_golden
+cmp
+test
+
+
+

@@ -1,0 +1,79 @@
+#
+# code.yml
+#
+# Gianna Paulin <pauling@iis.ee.ethz.ch>
+# Francesco Conti <f.conti@unibo.it>
+#
+# Copyright (C) 2019-2021 ETH Zurich, University of Bologna
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# See LICENSE.sw.txt for details.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# mnemonics to simplify microcode writingmnemonics:
+mnemonics:
+    W:                    0
+    x:                    1
+    NQ:                   2
+    y:                    3
+    W_major:              4
+    x_major:              5
+    x_major_h:            6
+    y_major:              7
+    y_major_h:            8
+    nif:                  9
+    nof:                 10
+    patch_size:          11
+    patch_size_w:        12
+    patch_size_h:        13
+    patch_output:        14
+    patch_output_w:      15
+    patch_output_h:      16
+    stream_size:         17
+    nq_batch:            18
+    zero:                19
+
+# RBE code
+code:
+  loop_qa_outer: # for kout_outer in range(0, n_tiles_qa)
+    - { op : mv,  a: W,         b: W_major                } # reset W
+    - { op : add, a: x,         b: patch_size             } # patch_size=TP*FB*FB*4
+    - { op : add, a: y,         b: zero                   }
+  loop_kin_outer: # for kin_outer in range(0,n_tiles_kin)
+    - { op : add, a: W,         b: stream_size            } # new sign +2 cycles of 1s
+    - { op : mv,  a: W_major,   b: W                      }
+    - { op : add, a: x,         b: patch_size             } # FS=3:  patch_size=TP*FB*FB*4  or # FS=1: patch_size=TP*3*3*4
+    - { op : add, a: y,         b: zero                   }
+  loop_kout_outer: # for kout_outer in range(0,n_tiles_kout)
+    - { op : add, a: W,         b: stream_size            } # stream_size = stream_width*(FS or QW)+2
+    - { op : mv,  a: W_major,   b: W                      }
+    - { op : mv,  a: x,         b: x_major                } # reset x to previous value
+    - { op : add, a: y,         b: patch_output           } # patch_output=TP*QA*9
+    - { op : add, a: NQ,        b: nq_batch               }
+  loop_w_patches:  # for x_patches in range(0,n_tiles_ow)
+    - { op : mv,  a: W,         b: zero                   } # reset
+    - { op : mv,  a: W_major,   b: zero                   }
+    - { op : add, a: x_major,   b: patch_size_w           } # FS=3:  patch_size=TP*FB*FB*4  or # FS=1: patch_size=TP*3*3*4
+    - { op : mv,  a: x,         b: x_major                }
+    - { op : mv,  a: NQ,        b: zero                   }
+    - { op : add, a: y_major,   b: patch_output_w         } # patch_output=TP*QA*9
+    - { op : mv,  a: y,         b: y_major                } # patch_output=TP*QA*9
+  loop_h_patches:  # for x_patches in range(0,n_tiles_oh)
+    - { op : mv,  a: W,         b: zero                   } # reset
+    - { op : mv,  a: W_major,   b: zero                   }
+    - { op : add, a: x_major_h, b: patch_size_h           } # FS=3:  patch_size=TP*FB*FB*4  or # FS=1: patch_size=TP*3*3*4
+    - { op : mv,  a: x_major,   b: x_major_h              } # FS=3:  patch_size=TP*FB*FB*4  or # FS=1: patch_size=TP*3*3*4
+    - { op : mv,  a: x,         b: x_major                }
+    - { op : mv,  a: NQ,        b: zero                   }
+    - { op : add, a: y_major_h, b: patch_output_h         } # patch_output=TP*QA*9
+    - { op : mv,  a: y_major,   b: y_major_h              } # patch_output=TP*QA*9
+    - { op : mv,  a: y,         b: y_major                } # patch_output=TP*QA*9

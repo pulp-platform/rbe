@@ -1,0 +1,23 @@
+zero-riscy:
+  commit: tags/pulpissimo-v1.0
+  group: pulp-platform
+
+hwpe-ctrl:
+  commit: v1.5
+  group: pulp-platform
+
+hwpe-stream:
+  commit: v1.5
+  group: pulp-platform
+
+tech_cells_generic:
+ commit: v0.1.6
+ group: pulp-platform
+
+hci_interconnect:
+  commit: v1.0.1
+  group: pulp-platform
+
+scm:
+  commit : afd3240
+  group: pulp-platform
