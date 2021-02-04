@@ -249,42 +249,58 @@ module rbe_ctrl_fsm
       // combination with the same ctrl_engine_o/ctrl_streamer_o variable
       // shift-by-3 due to conversion from bits to bytes
       // x / feat stream
-      ctrl_streamer_o.feat_source_ctrl.addressgen_ctrl.word_length  = (ctrl_i.fs == 1) ? {'0,NR_A_STREAMS_MIN} : {'0,NR_A_STREAMS_MAX};
-      ctrl_streamer_o.feat_source_ctrl.addressgen_ctrl.word_stride  = ctrl_i.iw*4;
-      ctrl_streamer_o.feat_source_ctrl.addressgen_ctrl.line_stride  = ctrl_i.static_w_tiles_K_in_qa << 4;
-      ctrl_streamer_o.feat_source_ctrl.addressgen_ctrl.line_length  = {'0,BINCONV_BLOCK_SIZE};
-      ctrl_streamer_o.feat_source_ctrl.addressgen_ctrl.base_addr    = reg_file_i.hwpe_params[RBE_REG_X_ADDR] + (flags_uloop_i.offs[RBE_ULOOP_X_OFFS] >> 3);
+
+      ctrl_streamer_o.feat_source_ctrl.addressgen_ctrl.tot_len       = (ctrl_i.fs == 1) ? {'0,NR_A_STREAMS_MIN} : {'0,NR_A_STREAMS_MAX};
+      ctrl_streamer_o.feat_source_ctrl.addressgen_ctrl.d0_stride     = ctrl_i.iw*4;
+      ctrl_streamer_o.feat_source_ctrl.addressgen_ctrl.d1_stride     = ctrl_i.static_w_tiles_K_in_qa << 4;
+      ctrl_streamer_o.feat_source_ctrl.addressgen_ctrl.d0_len        = {'0,BINCONV_BLOCK_SIZE};
+      ctrl_streamer_o.feat_source_ctrl.addressgen_ctrl.d1_len        = (ctrl_i.fs == 1) ? {'0,NR_A_STREAMS_MIN} : {'0,NR_A_STREAMS_MAX};
+      ctrl_streamer_o.feat_source_ctrl.addressgen_ctrl.d2_stride     = '0;
+      ctrl_streamer_o.feat_source_ctrl.addressgen_ctrl.dim_enable_1h = '1;
+      ctrl_streamer_o.feat_source_ctrl.addressgen_ctrl.base_addr     = reg_file_i.hwpe_params[RBE_REG_X_ADDR] + (flags_uloop_i.offs[RBE_ULOOP_X_OFFS] >> 3);
 
       if(ctrl_i.fs == 1) begin
         // W / weight stream
-        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.word_length  = (TP + 2);
-        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.word_stride  = (ctrl_i.qw * 4);
-        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.line_stride  = '0;
-        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.line_length  = (ctrl_i.qw * 4)*(TP + 2);
-        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.base_addr    = reg_file_i.hwpe_params[RBE_REG_W_ADDR] + (flags_uloop_i.offs[RBE_ULOOP_W_OFFS]);
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.tot_len       = (TP + 2);
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.d0_stride     = (ctrl_i.qw * 4);
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.d1_stride     = '0;
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.d0_len        = (TP + 2);
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.d1_len        = '0;
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.d2_stride     = '0;
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.dim_enable_1h = '1;
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.base_addr     = reg_file_i.hwpe_params[RBE_REG_W_ADDR] + (flags_uloop_i.offs[RBE_ULOOP_W_OFFS]);
       end
       else begin //if(ctrl_i.fs==3) begin
         // W / weight stream
-        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.word_length  = (ctrl_i.qw * TP + 2);
-        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.word_stride  = 36;
-        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.line_stride  = '0;
-        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.line_length  = 36 * (ctrl_i.qw * TP + 2);
-        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.base_addr    = reg_file_i.hwpe_params[RBE_REG_W_ADDR] + (flags_uloop_i.offs[RBE_ULOOP_W_OFFS]);
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.tot_len       = (ctrl_i.qw * TP + 2);
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.d0_stride     = 36;
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.d1_stride     = '0;
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.d0_len        = (ctrl_i.qw * TP + 2);
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.d1_len        = '0;
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.d2_stride     = '0;
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.dim_enable_1h = '1;
+        ctrl_streamer_o.weight_source_ctrl.addressgen_ctrl.base_addr     = reg_file_i.hwpe_params[RBE_REG_W_ADDR] + (flags_uloop_i.offs[RBE_ULOOP_W_OFFS]);
       end
 
       // norm stream
-      ctrl_streamer_o.norm_source_ctrl.addressgen_ctrl.word_length  = 8;
-      ctrl_streamer_o.norm_source_ctrl.addressgen_ctrl.word_stride  = 24;
-      ctrl_streamer_o.norm_source_ctrl.addressgen_ctrl.line_stride  = '0;
-      ctrl_streamer_o.norm_source_ctrl.addressgen_ctrl.line_length  = 8 * 24;
-      ctrl_streamer_o.norm_source_ctrl.addressgen_ctrl.base_addr    = reg_file_i.hwpe_params[RBE_REG_NQ_ADDR] + (flags_uloop_i.offs[RBE_ULOOP_NQ_OFFS] >> 3);
+      ctrl_streamer_o.norm_source_ctrl.addressgen_ctrl.tot_len       = 8;
+      ctrl_streamer_o.norm_source_ctrl.addressgen_ctrl.d0_stride     = 24;
+      ctrl_streamer_o.norm_source_ctrl.addressgen_ctrl.d1_stride     = '0;
+      ctrl_streamer_o.norm_source_ctrl.addressgen_ctrl.d0_len        = 8;
+      ctrl_streamer_o.norm_source_ctrl.addressgen_ctrl.d1_len        = '0;
+      ctrl_streamer_o.norm_source_ctrl.addressgen_ctrl.d2_stride     = '0;
+      ctrl_streamer_o.norm_source_ctrl.addressgen_ctrl.dim_enable_1h = '1;
+      ctrl_streamer_o.norm_source_ctrl.addressgen_ctrl.base_addr     = reg_file_i.hwpe_params[RBE_REG_NQ_ADDR] + (flags_uloop_i.offs[RBE_ULOOP_NQ_OFFS] >> 3);
 
       // y / conv stream
-      ctrl_streamer_o.conv_sink_ctrl.addressgen_ctrl.word_length  = {'0,NR_A_STREAMS_MIN};
-      ctrl_streamer_o.conv_sink_ctrl.addressgen_ctrl.word_stride  = ctrl_i.ow*4;
-      ctrl_streamer_o.conv_sink_ctrl.addressgen_ctrl.line_stride  = ctrl_i.static_w_tiles_K_out_qa_out << 4;
-      ctrl_streamer_o.conv_sink_ctrl.addressgen_ctrl.line_length  = {'0,BINCONV_BLOCK_SIZE};
-      ctrl_streamer_o.conv_sink_ctrl.addressgen_ctrl.base_addr    = (n_tiles_conv_cnt=={'0, 1'b1}) ? reg_file_i.hwpe_params[RBE_REG_Y_ADDR] + (flags_uloop_i.offs[RBE_ULOOP_Y_OFFS] >> 3) + {'0, {'0, ctrl_i.ow<<4} } : reg_file_i.hwpe_params[RBE_REG_Y_ADDR] + (flags_uloop_i.offs[RBE_ULOOP_Y_OFFS] >> 3);
+      ctrl_streamer_o.conv_sink_ctrl.addressgen_ctrl.tot_len       = {'0,NR_A_STREAMS_MIN};
+      ctrl_streamer_o.conv_sink_ctrl.addressgen_ctrl.d0_stride     = ctrl_i.ow*4;
+      ctrl_streamer_o.conv_sink_ctrl.addressgen_ctrl.d1_stride     = ctrl_i.static_w_tiles_K_out_qa_out << 4;
+      ctrl_streamer_o.conv_sink_ctrl.addressgen_ctrl.d0_len        = {'0,BINCONV_BLOCK_SIZE};
+      ctrl_streamer_o.conv_sink_ctrl.addressgen_ctrl.d1_len        = {'0,NR_A_STREAMS_MIN};
+      ctrl_streamer_o.conv_sink_ctrl.addressgen_ctrl.d2_stride     = '0;
+      ctrl_streamer_o.conv_sink_ctrl.addressgen_ctrl.dim_enable_1h = '1;
+      ctrl_streamer_o.conv_sink_ctrl.addressgen_ctrl.base_addr     = (n_tiles_conv_cnt=={'0, 1'b1}) ? reg_file_i.hwpe_params[RBE_REG_Y_ADDR] + (flags_uloop_i.offs[RBE_ULOOP_Y_OFFS] >> 3) + {'0, {'0, ctrl_i.ow<<4} } : reg_file_i.hwpe_params[RBE_REG_Y_ADDR] + (flags_uloop_i.offs[RBE_ULOOP_Y_OFFS] >> 3);
 
       // ========================================================================
       // engine

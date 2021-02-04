@@ -97,12 +97,14 @@ module rbe_streamer #(
 
   // source address generation etc.
   hci_core_source #(
-    .DATA_WIDTH ( BW )
+    .DATA_WIDTH           ( BW ),
+    .MISSAGLINED_ACCESSES ( 0  )
   ) i_all_source (
     .clk_i       ( clk_i            ),
     .rst_ni      ( rst_ni           ),
     .test_mode_i ( test_mode_i      ),
     .clear_i     ( clear_i          ),
+    .enable_i    ( 1'b1             ),
     .tcdm        ( virt_tcdm [0]    ),
     .stream      ( all_source       ),
     .ctrl_i      ( all_source_ctrl  ),
@@ -139,6 +141,7 @@ module rbe_streamer #(
     .rst_ni      ( rst_ni                  ),
     .test_mode_i ( test_mode_i             ),
     .clear_i     ( clear_i                 ),
+    .enable_i    ( 1'b1                    ),
     .tcdm        ( virt_tcdm [1]           ),
     .stream      ( conv_i                  ),
     .ctrl_i      ( ctrl_i.conv_sink_ctrl   ),

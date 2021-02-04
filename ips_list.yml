@@ -7,15 +7,15 @@ hwpe-ctrl:
   group: pulp-platform
 
 hwpe-stream:
-  commit: v1.5
+  commit: master
   group: pulp-platform
 
 tech_cells_generic:
  commit: v0.1.6
  group: pulp-platform
 
-hci_interconnect:
-  commit: v1.0.1
+hci:
+  commit: master
   group: pulp-platform
 
 scm:
