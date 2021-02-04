@@ -4,7 +4,7 @@ rbe:
     -suppress 2275,
     -L hwpe_stream_lib,
     -L hwpe_ctrl_lib,
-    -L hci_interconnect_lib,
+    -L hci_lib,
   ]
   incdirs: [
     .,
