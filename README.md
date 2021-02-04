@@ -12,6 +12,10 @@ In general the RBE has built-in HW supports the following features:
 - Nr of input channels: any multiple of 32
 - Nr of output channels: any multiple of 32
 
+## Contributors
+ - Gianna Paulin, ETH Zürich (*pauling@iis.ee.ethz.ch*)
+ - Francesco Conti, University of Bologna (*f.conti@unibo.it*)
+
 ## Computational Model
 For supporting the aforementioned features the RBE architecture exploits the following two mathematical concepts.
 
