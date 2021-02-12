@@ -97,8 +97,8 @@ module rbe_streamer #(
 
   // source address generation etc.
   hci_core_source #(
-    .DATA_WIDTH           ( BW ),
-    .MISSAGLINED_ACCESSES ( 0  )
+    .DATA_WIDTH          ( BW ),
+    .MISALIGNED_ACCESSES ( 0  )
   ) i_all_source (
     .clk_i       ( clk_i            ),
     .rst_ni      ( rst_ni           ),
