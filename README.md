@@ -1,5 +1,5 @@
 # Reconfigurable Binary Engine (RBE)
-The Reconfigurable Binary Engine (RBE) is a Deep Neural Network accelerator which uses some of the Hardware Processing Engine (HWPE) concepts [1] and is designed to be integrated in a PULPOpen cluster configuration via the Heterogeneous Cluster Interconnect (HCI). It makes use of the interface IPs 'hci', 'hwpe-ctrl', and 'hwpe-stream'.
+The Reconfigurable Binary Engine (RBE) is a Deep Neural Network accelerator which uses Hardware Processing Engine (HWPE) concepts [1] and is designed to be integrated in a PULPOpen cluster configuration in combination with the Heterogeneous Cluster Interconnect (HCI). It makes use of the open-source IPs 'hci', 'hwpe-ctrl', and 'hwpe-stream'.
 
 In general the RBE has built-in HW supports the following features:
 
@@ -47,22 +47,22 @@ is approximated as
 ![BBQ Convolution Formula](docs/img/formula_conv_bbq1.png)
 
 ### Negative Weights: Offset Computation
-For supporting positive and negative weights the RBE makes use of a special shifting of the negative
-weights to positive. and applying the following (simplified) algorithm to compute the convolutions:
+For supporting positive and negative weights, the RBE makes use of a special shifting of the negative weights to positive. The following (simplified) algorithm is used to compute the convolutions:
 
 ![Convolution with seperate Offset Computation Formula](docs/img/formula_offset_computation.png)
 
 As this offset ![Offset](docs/img/formula_offset.png) is dependent on the input features x, it cannot
-be computed in advance and loaded into it but should in the best case be computed on the
+be computed in advance and loaded into it but should, in the best case, be computed on the
 accelerator. As the offset is the same for every output channel of a single output pixel,
-it can be computed once and then being reused over all output channels which results in a
-higher throughput than the old schemes. The overhead is only 2 cycles per 32xQW (where QW means number of weight bits) instead of 1 cycle every QW cycles.
+it can be computed once and reused overall output channels, which results in higher throughput.
+The overhead for this offset computation is only two cycles per 32xQW 
+(where QW means the number of weight bits) instead of 1 cycle every QW cycles.
 
 ## Architecture
 More information on the architecture can be found in the `./docs` directory.
 
 # Usage
-The RBE can be simulated together with the *RBE Testbench*. For it's usage, please check the corresponding `README.md`.
+The RBE can be simulated together with the *RBE Testbench* (open-source version coming soon). For it's usage, please check the corresponding `README.md`.
 
 Run the following command in a bash shell for listing all execution options:
 ```
@@ -72,7 +72,7 @@ make help
 ## Repository Organization
 The main directories of this repository are:
 
-- `./docs` - contains the architecture and more documentation
+- `./docs` - contains the architecture description and more documentation (work in progress)
 - `./model` - contains python-based golden models. For the verification three golden models were developed:
   - a simple golden model based on BBQ
   - a simple golden model checking Offest Computation (for negative weights)
